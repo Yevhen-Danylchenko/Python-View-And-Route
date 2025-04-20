@@ -132,7 +132,14 @@ def science(request):
 def get_book_by_id(request, book_id):
     book = Books.get(book_id)
     if book:
-        return JsonResponse(book)
+        book_details = f"""
+            <h2 style = "text-align: center; margin-top: 100px; margin-bottom: 20px;">Знайдені книги</h2>
+            <h2 style = "text-align: center; margin-top: 20px; margin-bottom: 20px;">{ book["title"] }</h2>
+            <h2 style = "text-align: center; margin-top: 20px; margin-bottom: 20px;">{ book["author"]}</h2>
+            <p style = "text-align: center; margin-top: 20px; margin-bottom: 20px;">Ціна: { book["price"] }</p>
+            <p style = "text-align: center; margin-top: 20px; margin-bottom: 20px;">Опис: { book["genre"] }</p>
+        """
+        return HttpResponse(book_details)
     else:
         return HttpResponse("<h2>Книга не знайдена</h2>", status=404)
 
@@ -142,7 +149,19 @@ def search_book(request, part_of_title):
         if part_of_title.lower() in book["title"].lower()
     ]
     if result:
-        return JsonResponse(result, safe=False)
+        book_details = """<h2 style = "text-align: center; margin-top: 100px; margin-bottom: 20px;">Знайдені книги</h2>
+            <ul>"""
+        for book in result:
+            book_details += f"""
+                    <li style = "display: flex; justify-content: center; list-style: none; gap: 100px;">
+                        <h2>{book["title"]}</h2>
+                        <h2>{book["author"]}</h2>
+                        <p>Ціна: {book["price"]}</p>
+                        <p>Опис: {book["genre"]}</p>
+                    </li>
+                """
+            book_details += "</ul>"
+        return HttpResponse(book_details)
     else:
         return HttpResponse("<h2>Книга не знайдена</h2>", status=404)
 
@@ -152,7 +171,19 @@ def filter_book_by_price(request, min_price, max_price):
         if min_price <= book["price"] <= max_price
     ]
     if result:
-        return JsonResponse(result, safe=False)
+        book_details = """<h2 style = "text-align: center; margin-top: 100px; margin-bottom: 20px;">Знайдені книги</h2>
+            <ul>"""
+        for book in result:
+            book_details += f"""
+                            <li style = "display: flex; justify-content: center; list-style: none; gap: 100px;">
+                                <h2>{book["title"]}</h2>
+                                <h2>{book["author"]}</h2>
+                                <p>Ціна: {book["price"]}</p>
+                                <p>Опис: {book["genre"]}</p>
+                            </li>
+                        """
+            book_details += "</ul>"
+        return HttpResponse(book_details)
     else:
         return HttpResponse("<h2>Книга не знайдена</h2>", status=404)
 
@@ -177,4 +208,4 @@ def dynamic_page(request, page_name):
     else:
         tmp_name = error(request)
 
-    return HttpResponse(tmp_name)
+    return tmp_name
