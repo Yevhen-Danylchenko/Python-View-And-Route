@@ -22,6 +22,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.book_list, name='book_list'),
     path('<str:page_name>/', views.dynamic_page, name='dynamic_page'),
+    path('book/<int:book_id>/', views.get_book_by_id, name='get_book_by_id'),
+    path('search/<str:part_of_title>/', views.search_book, name='search_book'),
+    path('filter/<int:min_price>/<int:max_price>/', views.filter_book_by_price, name='filter_book_by_price')
     # path('new', views.new_book, name='new_book'),
     # path('magic', views.magic, name='magic'),
     # path('fantastic', views.fantastic, name='fantastic'),

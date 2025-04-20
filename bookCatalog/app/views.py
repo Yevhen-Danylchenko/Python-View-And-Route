@@ -1,4 +1,14 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+
+
+
+Books = {
+    1:{"title":"Окрема реальність", "author":"Карлос Кастанеда", "price":200, "genre":"Magic"},
+    2:{"title":"Скажи мені", "author":"Енн Фрейзер", "price":350, "genre":"Fantastic"},
+    3:{"title":"Багаття долі", "author":"Оділь Буе", "price":450, "genre":"Fantastic"},
+    4:{"title":"Нічна зміна", "author":"М. Л. Ріо", "price":270, "genre":"Fantastic"},
+    5:{"title":"ChatGPT", "author":"Олександр Краковецький", "price":300, "genre":"Science"},
+}
 
 def book_list(request):
     books = """
@@ -118,6 +128,34 @@ def science(request):
     """
 
     return HttpResponse(scien)
+
+def get_book_by_id(request, book_id):
+    book = Books.get(book_id)
+    if book:
+        return JsonResponse(book)
+    else:
+        return HttpResponse("<h2>Книга не знайдена</h2>", status=404)
+
+def search_book(request, part_of_title):
+    result = [
+        book for book in Books.values()
+        if part_of_title.lower() in book["title"].lower()
+    ]
+    if result:
+        return JsonResponse(result, safe=False)
+    else:
+        return HttpResponse("<h2>Книга не знайдена</h2>", status=404)
+
+def filter_book_by_price(request, min_price, max_price):
+    result = [
+        book for book in Books.values()
+        if min_price <= book["price"] <= max_price
+    ]
+    if result:
+        return JsonResponse(result, safe=False)
+    else:
+        return HttpResponse("<h2>Книга не знайдена</h2>", status=404)
+
 
 def error(request):
     err = """
